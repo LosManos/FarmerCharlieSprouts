@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using FarmerCharlieSprouts.Machinery.Surveiller.Extensions;
 
 namespace FarmerCharlieSprouts.Machinery.Surveiller
 {
@@ -16,9 +17,8 @@ namespace FarmerCharlieSprouts.Machinery.Surveiller
 		private string _pathAndFilename;
 		private FileSystemWatcher _watch = new FileSystemWatcher();
 		private Action<string> _changeMethod;
-		private long _lastPosition = 0;
-		private DateTime? _lastModifiedDatetime;
 		private static object _fileLock = new Object();
+		private static List<long> _sizes = new List<long>();
 
 		public void SetChange(Action<string> actionMethod)
 		{
@@ -28,13 +28,13 @@ namespace FarmerCharlieSprouts.Machinery.Surveiller
 			_watch.EnableRaisingEvents = true;
 
 			//DEBUG: Don't call the change method when setting up the watcher.
-			_changeMethod("starts at " + _lastPosition + " characters.");
+			_changeMethod("starts at " + _sizes.Single() + " characters.");
 		}
 
 		public void Watch(string pathAndFilename)
 		{
 			_pathAndFilename = pathAndFilename;
-			_lastPosition = GetFileSize(pathAndFilename);
+			_sizes.Add(GetFileSize(pathAndFilename));
 			_watch.Path = System.IO.Path.GetDirectoryName(pathAndFilename);
 			_watch.Filter = System.IO.Path.GetFileName(pathAndFilename);
 		}
@@ -45,57 +45,49 @@ namespace FarmerCharlieSprouts.Machinery.Surveiller
 		/// <param name="e"></param>
 		void watch_Changed(object sender, FileSystemEventArgs e)
 		{
-			//_changeMethod(GetFileModifiedDatetime(_pathAndFilename).ToLongTimeString());
-			var changeDatetime = GetFileModifiedDatetime(_pathAndFilename);
-			if (null == _lastModifiedDatetime || _lastModifiedDatetime.Value != changeDatetime)
+			lock (_fileLock)
 			{
-				_lastModifiedDatetime = changeDatetime;
-
-				//	res is a reference to the new data in the file.
-				//	There are probably faster ways than to append character by character but it works for now.
-				var res = "";
-
-				//Thread.Sleep(1000);
-				var lastPositionOutsideTryCatch = _lastPosition;
-
-				lock (_fileLock)
+				var fileinfo = new FileInfo(_pathAndFilename);
+				var presentFileSize = fileinfo.Length;
+				if (0 == presentFileSize) { return; }	//	Sometimes the file length is 0; bail. Why 0 - dunno.
+				if (_sizes.AddLastIfDifferent(presentFileSize))
 				{
+					//_changeMethod("_sizes:" + string.Join(",", _sizes));
+					//_changeMethod("Size:" + presentFileSize);
 					try
 					{
-						using (var sr = new StreamReader(_pathAndFilename))
+						using (var sr = new FileStream(_pathAndFilename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
 						{
-							ReadToPosition(sr, lastPositionOutsideTryCatch);
-							int c;
-							do
+							SkipToPosition(sr, _sizes.First());
+							while (_sizes.Count() >= 2)
 							{
-								c = ReadCharacter(ref res, sr);
-							} while (c != -1);
-							sr.Close();
-							lastPositionOutsideTryCatch += res.Count();
-							_changeMethod("lastPositionOutsideTryCatch:" + lastPositionOutsideTryCatch);
+								var presentPosition = _sizes.First();
+								var nextPosition = _sizes.Skip(1).First();
+								var s = ReadToPosition(sr, presentPosition, nextPosition);
+								//_changeMethod("Pos:" + nextPosition + ", Text:" + s);
+								_changeMethod(s);
+								_sizes.RemoveAt(0);	//	Remove only when we know we have printed.								
+							}
 						}
 					}
 					catch (IOException exc)
 					{
-						_changeMethod("lastPositionOutsideTryCatch in exception:" + lastPositionOutsideTryCatch);
-
+						_changeMethod("Exception:" + exc.Message);
 						if (exc.HResult != -2147024864)
 						{
 							throw;
 						}
 					}
 				}
-				_lastPosition = lastPositionOutsideTryCatch;
-
-				_changeMethod(res);
 			}
 		}
 
-		private static DateTime GetFileModifiedDatetime(string pathAndFilename)
-		{
-			var fileinfo = new FileInfo(pathAndFilename);
-			return fileinfo.LastWriteTime;
-		}
+		//private static DateTime GetFileModifiedDatetime(string pathAndFilename)
+		//{
+		//	var fileinfo = new FileInfo(pathAndFilename);
+		//	return fileinfo.LastWriteTime;
+		//	fileinfo.Length
+		//}
 
 		/// <summary>This method returns the number of characters in a file.
 		/// It is not the same as fileinfo.length. For instace create a text document with two characters
@@ -128,15 +120,28 @@ namespace FarmerCharlieSprouts.Machinery.Surveiller
 		/// <param name="res"></param>
 		/// <param name="sr"></param>
 		/// <returns></returns>
-		private static int ReadCharacter(ref string res, StreamReader sr)
+		private static int ReadCharacter(ref string res, FileStream sr)
 		{
 			int c;
-			c = sr.Read();
+			c = sr.ReadByte();
 			if (c != -1)
 			{
 				res += (char)c;
 			}
 			return c;
+		}
+
+		private static string ReadToPosition( 
+			FileStream sr, 
+			long formerPosition, 
+			long newPosition )
+		{
+			var ret = "";
+			for (var i = formerPosition; i < newPosition; ++i)
+			{
+				ret += (char)sr.ReadByte();
+			}
+			return ret;
 		}
 
 		/// <summary>This method forwads the stream pointer to a certain place.
@@ -146,12 +151,12 @@ namespace FarmerCharlieSprouts.Machinery.Surveiller
 		/// I ahve tested but not succeded. /OF
 		/// </summary>
 		/// <param name="sr"></param>
-		/// <param name="lastPosition"></param>
-		private static void ReadToPosition(StreamReader sr, long lastPosition)
+		/// <param name="position"></param>
+		private static void SkipToPosition(FileStream sr, long position)
 		{
-			for (long i = 0; i < lastPosition; ++i)
+			for (long i = 0; i < position; ++i)
 			{
-				sr.Read();
+				sr.ReadByte();
 			}
 		}
 
