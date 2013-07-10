@@ -42,11 +42,12 @@ Exiting.";
 			Console.ReadKey();
 		}
 
-		public static void FileChanged(string message)
+		public static void FileChanged(long lineNumber, string message)
 		{
 			Console.ForegroundColor = colours.NextOrFirstItem(Console.ForegroundColor);
 
 			Console.WriteLine(
+				"[" + lineNumber + "]" +
 				message ?? "null");
 		}
 

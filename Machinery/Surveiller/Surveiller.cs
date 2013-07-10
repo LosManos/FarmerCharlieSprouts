@@ -14,7 +14,7 @@ namespace FarmerCharlieSprouts.Machinery.Surveiller
 	/// </summary>
 	public class Surveiller
 	{
-		private Action<string> _changeMethod;
+		private Action<long, string> _changeMethod;
 		private Action<string> _initCallMethod;
 		private static object _lock = new Object();
 		private string _pathAndFilename;
@@ -25,7 +25,7 @@ namespace FarmerCharlieSprouts.Machinery.Surveiller
 		/// </summary>
 		/// <param name="initCallMethod">The frist method that is called back, used for showing init info.</param>
 		/// <param name="actionMethod">This method is called once for every change.</param>
-		public void SetChange(Action<string> initCallMethod, Action<string> actionMethod)
+		public void SetChange(Action<string> initCallMethod, Action<long, string> actionMethod)
 		{
 			_changeMethod = actionMethod;
 			_initCallMethod = initCallMethod;
@@ -59,27 +59,24 @@ namespace FarmerCharlieSprouts.Machinery.Surveiller
 
 				if (_sizes.AddLastIfDifferent(presentFileSize))
 				{
-					//_changeMethod("_sizes:" + string.Join(",", _sizes));
-					//_changeMethod("Size:" + presentFileSize);
 					try
 					{
 						using (var sr = new FileStream(_pathAndFilename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
 						{
-							SkipToPosition(sr, _sizes.First());
+							var lineCount = SkipToPosition(sr, _sizes.First());
 							while (_sizes.Count() >= 2)
 							{
 								var presentPosition = _sizes.First();
 								var nextPosition = _sizes.Skip(1).First();
 								var s = ReadToPosition(sr, presentPosition, nextPosition);
-								//_changeMethod("Pos:" + nextPosition + ", Text:" + s);
-								_changeMethod(s);
-								_sizes.RemoveAt(0);	//	Remove only when we know we have printed.								
+								_changeMethod(lineCount, s);
+								_sizes.RemoveAt(0);	//	Remove item from list only when we know we have printed.								
 							}
 						}
 					}
 					catch (IOException exc)
 					{
-						_changeMethod("Exception:" + exc.Message);
+						_changeMethod(-1, "Exception:" + exc.Message);
 						if (exc.HResult != -2147024864)
 						{
 							throw;
@@ -159,12 +156,16 @@ namespace FarmerCharlieSprouts.Machinery.Surveiller
 		/// </summary>
 		/// <param name="sr"></param>
 		/// <param name="position"></param>
-		private static void SkipToPosition(FileStream sr, long position)
+		private static int SkipToPosition(FileStream sr, long position)
 		{
+			//	TODO:	Rename method to something better, something that both skips and returns the line count.
+			var lineCount = 0;
 			for (long i = 0; i < position; ++i)
 			{
-				sr.ReadByte();
+				var c = sr.ReadByte();
+				if (c == '\n') { lineCount += 1; }
 			}
+			return lineCount;
 		}
 
 	}
