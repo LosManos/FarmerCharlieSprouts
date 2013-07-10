@@ -1,14 +1,1 @@
-abc
-def
-ghi
-jkl
-mno
-pqr
-tuvavc
-def
-ghi
-a
-b
-c
-d
-gsdisd;fabv
+ABC

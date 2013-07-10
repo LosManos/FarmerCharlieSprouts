@@ -1,4 +1,4 @@
-This project, "Farmer Charlie Sprouts", is a stab at visualising changing files.
+This project, "Farmer Charlie Sprouts", is a stab at visualising changing files; typically log files
 
 
 # Moon shot

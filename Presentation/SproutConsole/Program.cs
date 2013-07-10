@@ -29,7 +29,7 @@ namespace FarmerCharlieSprouts.Presentation.SproutConsole
 			Console.ForegroundColor = colours.NextOrFirstItem(Console.ForegroundColor);
 
 			Console.WriteLine(
-				"Change:" + (message ?? "null"));
+				message ?? "null");
 		}
 	}
 }

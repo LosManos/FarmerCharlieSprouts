@@ -40,6 +40,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Extensions\ListExtensions.cs" />
+    <Compile Include="Properties\AssemblyInfo.shared.cs" />
     <Compile Include="Surveiller.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
