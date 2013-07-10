@@ -56,6 +56,7 @@ namespace FarmerCharlieSprouts.Machinery.Surveiller
 				var fileinfo = new FileInfo(_pathAndFilename);
 				var presentFileSize = fileinfo.Length;
 				if (0 == presentFileSize) { return; }	//	Sometimes the file length is 0; bail. Why 0 - dunno.
+
 				if (_sizes.AddLastIfDifferent(presentFileSize))
 				{
 					//_changeMethod("_sizes:" + string.Join(",", _sizes));

@@ -30,6 +30,7 @@ Exiting.";
 					@"Starting surveillance on file {0}.", 
 					pathfilename
 				);
+			Console.WriteLine(successMessage);
 
 			Console.ForegroundColor = colours[0];
 
