@@ -14,21 +14,27 @@ namespace FarmerCharlieSprouts.Machinery.Surveiller
 	/// </summary>
 	public class Surveiller
 	{
-		private string _pathAndFilename;
-		private FileSystemWatcher _watch = new FileSystemWatcher();
 		private Action<string> _changeMethod;
-		private static object _fileLock = new Object();
+		private Action<string> _initCallMethod;
+		private static object _lock = new Object();
+		private string _pathAndFilename;
 		private static List<long> _sizes = new List<long>();
+		private FileSystemWatcher _watch = new FileSystemWatcher();
 
-		public void SetChange(Action<string> actionMethod)
+		/// <summary>This method is called to set the callback methods.
+		/// </summary>
+		/// <param name="initCallMethod">The frist method that is called back, used for showing init info.</param>
+		/// <param name="actionMethod">This method is called once for every change.</param>
+		public void SetChange(Action<string> initCallMethod, Action<string> actionMethod)
 		{
 			_changeMethod = actionMethod;
+			_initCallMethod = initCallMethod;
 			_watch.NotifyFilter = NotifyFilters.LastWrite;
 			_watch.Changed += new FileSystemEventHandler(watch_Changed);
 			_watch.EnableRaisingEvents = true;
 
 			//DEBUG: Don't call the change method when setting up the watcher.
-			_changeMethod("starts at " + _sizes.Single() + " characters.");
+			_initCallMethod("Starts at " + _sizes.Single() + " characters.");
 		}
 
 		public void Watch(string pathAndFilename)
@@ -43,9 +49,9 @@ namespace FarmerCharlieSprouts.Machinery.Surveiller
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
-		void watch_Changed(object sender, FileSystemEventArgs e)
+		 void watch_Changed(object sender, FileSystemEventArgs e)
 		{
-			lock (_fileLock)
+			lock (_lock)
 			{
 				var fileinfo = new FileInfo(_pathAndFilename);
 				var presentFileSize = fileinfo.Length;

@@ -18,7 +18,7 @@ namespace FarmerCharlieSprouts.Presentation.SproutConsole
 
 			var surveiller = new Surveiller();
 			surveiller.Watch(@"C:\DATA\PROJEKT\FarmerCharlieSprouts\Presentation\SproutConsole\Data\test to change.txt");
-			surveiller.SetChange(FileChanged);
+			surveiller.SetChange(InitCall, FileChanged);
 
 			Console.WriteLine("Press any key...");
 			Console.ReadKey();
@@ -30,6 +30,11 @@ namespace FarmerCharlieSprouts.Presentation.SproutConsole
 
 			Console.WriteLine(
 				message ?? "null");
+		}
+
+		public static void InitCall(string message)
+		{
+			Console.WriteLine(message);
 		}
 	}
 }
