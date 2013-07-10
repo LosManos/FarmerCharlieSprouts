@@ -14,10 +14,27 @@ namespace FarmerCharlieSprouts.Presentation.SproutConsole
 
 		static void Main(string[] args)
 		{
+			if (null == args || args.Count()==0)
+			{
+				const string failMessage =
+					@"FarmerCharlieSprouts - Console
+Argument missing, please provide a file name to surveil.
+E.g.: SproutConsole.exe mylogfile.log
+Exiting.";
+				Console.WriteLine(failMessage);
+				return;
+			}
+			var pathfilename = args[0];
+
+			var successMessage = string.Format(
+					@"Starting surveillance on file {0}.", 
+					pathfilename
+				);
+
 			Console.ForegroundColor = colours[0];
 
 			var surveiller = new Surveiller();
-			surveiller.Watch(@"C:\DATA\PROJEKT\FarmerCharlieSprouts\Presentation\SproutConsole\Data\test to change.txt");
+			surveiller.Watch(pathfilename);
 			surveiller.SetChange(InitCall, FileChanged);
 
 			Console.WriteLine("Press any key...");
