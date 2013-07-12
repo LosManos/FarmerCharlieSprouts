@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SproutWebServer
+namespace SproutWebServer.Controllers
 {
 	public class MainModule : Nancy.NancyModule
 	{

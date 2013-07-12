@@ -56,7 +56,7 @@
     <Compile Include="..\..\Machinery\Surveiller\Properties\AssemblyInfo.shared.cs">
       <Link>Properties\AssemblyInfo.shared.cs</Link>
     </Compile>
-    <Compile Include="MainModule.cs" />
+    <Compile Include="Controllers\MainModule.cs" />
     <Compile Include="Models\IndexModel.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
