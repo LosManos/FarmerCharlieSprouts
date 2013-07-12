@@ -57,13 +57,14 @@
       <Link>Properties\AssemblyInfo.shared.cs</Link>
     </Compile>
     <Compile Include="MainModule.cs" />
+    <Compile Include="Models\IndexModel.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
-    <None Include="views\Index.cshtml">
+    <None Include="Views\Index.cshtml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="web.config" />

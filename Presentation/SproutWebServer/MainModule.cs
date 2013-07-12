@@ -6,11 +6,6 @@ using System.Threading.Tasks;
 
 namespace SproutWebServer
 {
-	public class MyModel
-	{
-		public string Name { get; set; }
-	}
-
 	public class MainModule : Nancy.NancyModule
 	{
 		public MainModule()
@@ -18,7 +13,7 @@ namespace SproutWebServer
 			Get["/"] = x =>
 				{
 					//return "hello world";
-					return View["Index", new MyModel{Name="from model"}];
+					return View["Index", new Models.IndexModel{Name="from model"}];
 				};
 		}
 	}
