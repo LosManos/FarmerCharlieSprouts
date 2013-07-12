@@ -21,6 +21,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SurveillerTest", "Test\Surv
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SproutConsole", "Presentation\SproutConsole\SproutConsole.csproj", "{7C337C65-AAAD-4862-8D3A-A25052F8307D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SproutWebServer", "Presentation\SproutWebServer\SproutWebServer.csproj", "{C75FCCA9-7483-4D20-B9E8-CE3AF8CED3B4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,12 +41,17 @@ Global
 		{7C337C65-AAAD-4862-8D3A-A25052F8307D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7C337C65-AAAD-4862-8D3A-A25052F8307D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7C337C65-AAAD-4862-8D3A-A25052F8307D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C75FCCA9-7483-4D20-B9E8-CE3AF8CED3B4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C75FCCA9-7483-4D20-B9E8-CE3AF8CED3B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C75FCCA9-7483-4D20-B9E8-CE3AF8CED3B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C75FCCA9-7483-4D20-B9E8-CE3AF8CED3B4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{7C337C65-AAAD-4862-8D3A-A25052F8307D} = {65427969-8A3F-4417-A114-FEA7A2270784}
+		{C75FCCA9-7483-4D20-B9E8-CE3AF8CED3B4} = {65427969-8A3F-4417-A114-FEA7A2270784}
 		{83565B27-55B9-4FF1-843C-7CAFCE169EC1} = {7F67AA6D-4E92-46DA-8CD0-7366642AB838}
 		{8B7E08C5-BCA3-47A2-B8E7-DC6EE9ABE265} = {21229976-0674-4A19-9781-9A6F8C15E405}
 	EndGlobalSection
