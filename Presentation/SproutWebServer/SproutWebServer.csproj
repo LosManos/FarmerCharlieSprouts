@@ -69,6 +69,12 @@
     </None>
     <None Include="web.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Machinery\Surveiller\Surveiller.csproj">
+      <Project>{8b7e08c5-bca3-47a2-b8e7-dc6ee9abe265}</Project>
+      <Name>Surveiller</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>

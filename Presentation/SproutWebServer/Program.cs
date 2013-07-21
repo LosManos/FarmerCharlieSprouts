@@ -16,6 +16,7 @@ namespace SproutWebServer
 			{
 				host.Start();
 
+				Console.WriteLine("Surf to http://localhost:666");
 				Console.Write("Press any key");
 				Console.ReadKey();
 				host.Stop();
